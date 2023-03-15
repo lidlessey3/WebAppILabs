@@ -35,8 +35,16 @@ function Movie(id, title, favorite = false, date = undefined, rating = undefined
 }
 
 function FilmLibrary() {
-    this.films = [];
-    this.addNewFilm = (film) => this.films.push(film);
+    this.addNewFilm = async function (film) {
+        if (film.rating != undefined) {
+            const sql = "INSERT INTO LIBRARY VALUES(?,?,?,?,?)";
+            db.run(sql, [film.id, film.title, film.favorite, film.date.toISOString(), film.rating]);
+        } else {
+            const sql = "INSERT INTO LIBRARY VALUES(?,?,?, NULL, NULL)";
+            db.run(sql, [film.id, film.title, film.favorite]);
+        }
+    };
+
     this.print = () => this.films.forEach((elem) => elem.print());
     this.sortByDate = () => [...this.films].sort((a, b) => {
         if (a.date === undefined && b.date === undefined)
@@ -59,16 +67,18 @@ function FilmLibrary() {
 }
 
 async function main() {
-    await db.run("DROP TABLE IF EXISTS LIBRARY;"); // drop table if it exists
-    
-    await db.run("CREATE TABLE LIBRARY(\
-        id INT PRIMARY KEY, \
-        title varchar(30) NOT NULL, \
-        favorite bool NOT NULL, \
-        date DATE, \
-        rating INT \
-    );");
-
+    await new Promise((resolve, reject) =>
+        db.run("DROP TABLE IF EXISTS LIBRARY;", (result, err) => {
+            if (!err) {
+                db.run("CREATE TABLE LIBRARY(\
+                id NUMBER PRIMARY KEY, \
+                title varchar(30) NOT NULL, \
+                favorite bool NOT NULL, \
+                dateW DATE, \
+                rating NUMBER \
+            );", (result, err) => { if (!err) resolve(true); });
+            }
+        })); // drop table if it exists
 
     let filmObj = new FilmLibrary();
 
@@ -77,7 +87,7 @@ async function main() {
     filmObj.addNewFilm(new Movie(3, "star wars"));
     filmObj.addNewFilm(new Movie(4, "matrix"));
     filmObj.addNewFilm(new Movie(5, "shrek", false, "2023-03-21", 3));
-
+    return;
     filmObj.print();
 
     console.log("---------------------")
