@@ -1,6 +1,9 @@
 "use strict";
 
 const dayjs = require("dayjs");
+const sqlite = require("sqlite3");
+
+const db = new sqlite.Database("films.sqlite", (err) => { if (err) throw err });
 
 function ex0(strings) {
     return strings.map((string) => {
@@ -55,28 +58,43 @@ function FilmLibrary() {
     this.getRated = () => this.films.filter((elem) => elem.date != undefined).sort((a, b) => b.rating - a.rating);
 }
 
-let filmObj = new FilmLibrary();
+async function main() {
+    await db.run("DROP TABLE IF EXISTS LIBRARY;"); // drop table if it exists
+    
+    await db.run("CREATE TABLE LIBRARY(\
+        id INT PRIMARY KEY, \
+        title varchar(30) NOT NULL, \
+        favorite bool NOT NULL, \
+        date DATE, \
+        rating INT \
+    );");
 
-filmObj.addNewFilm(new Movie(1, "pulp fiction", true, "2023-03-10", 5));
-filmObj.addNewFilm(new Movie(2, "21 grams", true, "2023-03-17", 4));
-filmObj.addNewFilm(new Movie(3, "star wars"));
-filmObj.addNewFilm(new Movie(4, "matrix"));
-filmObj.addNewFilm(new Movie(5, "shrek", false, "2023-03-21", 3));
 
-filmObj.print();
+    let filmObj = new FilmLibrary();
 
-console.log("---------------------")
+    filmObj.addNewFilm(new Movie(1, "pulp fiction", true, "2023-03-10", 5));
+    filmObj.addNewFilm(new Movie(2, "21 grams", true, "2023-03-17", 4));
+    filmObj.addNewFilm(new Movie(3, "star wars"));
+    filmObj.addNewFilm(new Movie(4, "matrix"));
+    filmObj.addNewFilm(new Movie(5, "shrek", false, "2023-03-21", 3));
 
-filmObj.sortByDate().forEach((elem) => elem.print());
+    filmObj.print();
 
-console.log("---------------------")
-filmObj.getRated().forEach((elem) => elem.print());
+    console.log("---------------------")
 
-console.log("---------------------")
-filmObj.resetWatchedFilms();
-filmObj.print();
+    filmObj.sortByDate().forEach((elem) => elem.print());
 
-console.log("---------------------")
-filmObj.deleteFilm(5);
-filmObj.deleteFilm(2);
-filmObj.print();
+    console.log("---------------------")
+    filmObj.getRated().forEach((elem) => elem.print());
+
+    console.log("---------------------")
+    filmObj.resetWatchedFilms();
+    filmObj.print();
+
+    console.log("---------------------")
+    filmObj.deleteFilm(5);
+    filmObj.deleteFilm(2);
+    filmObj.print();
+}
+
+main();
