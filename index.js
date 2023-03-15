@@ -42,7 +42,7 @@ function FilmLibrary() {
             return 1;
         if (b.date === undefined)
             return -1;
-        a.date.isAfter(b.date) ? 1 : -1;
+        return a.date.isAfter(b.date) ? 1 : -1;
     });
     this.deleteFilm = (id) => {
         let k = this.films.findIndex((elem) => elem.id === id);

@@ -9,6 +9,7 @@
   "author": "Leonardo Pavarino s314895",
   "license": "MIT",
   "dependencies": {
-    "dayjs": "^1.11.7"
+    "dayjs": "^1.11.7",
+    "sqlite3": "^5.1.6"
   }
 }
