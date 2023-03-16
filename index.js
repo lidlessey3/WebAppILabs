@@ -69,7 +69,7 @@ function FilmLibrary(database) {
     }
 
     this.print = async () => (await this.getAllFilms().then()).forEach((elem) => elem.print());
-    this.sortByDate = () => [...this.films].sort((a, b) => {
+    this.sortByDate = async () => [...(await this.getAllFilms().then())].sort((a, b) => {
         if (a.date === undefined && b.date === undefined)
             return 0;
         if (a.date === undefined)
@@ -79,14 +79,26 @@ function FilmLibrary(database) {
         return a.date.isAfter(b.date) ? 1 : -1;
     });
     this.deleteFilm = (id) => {
-        let k = this.films.findIndex((elem) => elem.id === id);
-        if (k === -1)
-            return;
-        this.films.splice(k, 1);
-        return;
+        return new Promise((resolve, reject) => {
+            let sql = "DELETE FROM LIBRARY WHERE id = ?;";
+            this.db.run(sql, [id], (result, err) => {
+                if (err)
+                    reject(err);
+                else
+                    resolve(result);
+            });
+        });
     };
-    this.resetWatchedFilms = () => this.films.forEach((elem) => elem.reset());
-    this.getRated = () => this.films.filter((elem) => elem.date != undefined).sort((a, b) => b.rating - a.rating);
+    this.resetWatchedFilms = () => new Promise((resolve, reject) => {
+        let sql = "UPDATE LIBRARY WHERE dateW IS NOT NULL SET dateW = NULL, rating = NULL";
+        this.db.run(sql, [], (result, err) => {
+            if (err)
+                reject(err);
+            else
+                resolve(result);
+        });
+    });
+    this.getRated = async () => (await this.getAllFilms().then()).filter((elem) => elem.date != undefined).sort((a, b) => b.rating - a.rating);
 }
 
 async function main() {
@@ -112,21 +124,21 @@ async function main() {
     await filmObj.addNewFilm(new Movie(5, "shrek", false, "2023-03-21", 3));
 
     filmObj.print();
-    return;
-    console.log("---------------------")
 
-    filmObj.sortByDate().forEach((elem) => elem.print());
+    console.log("---------------------");
 
-    console.log("---------------------")
-    filmObj.getRated().forEach((elem) => elem.print());
+    (await filmObj.sortByDate()).forEach((elem) => elem.print());
 
-    console.log("---------------------")
-    filmObj.resetWatchedFilms();
+    console.log("---------------------");
+    (await filmObj.getRated()).forEach((elem) => elem.print());
+
+    console.log("---------------------");
+    await filmObj.resetWatchedFilms();
     filmObj.print();
 
-    console.log("---------------------")
-    filmObj.deleteFilm(5);
-    filmObj.deleteFilm(2);
+    console.log("---------------------");
+    await filmObj.deleteFilm(5);
+    await filmObj.deleteFilm(2);
     filmObj.print();
 }
 
