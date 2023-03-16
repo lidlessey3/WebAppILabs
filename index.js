@@ -34,18 +34,41 @@ function Movie(id, title, favorite = false, date = undefined, rating = undefined
     this.print = () => console.log("Id: ", this.id, ", Title: ", this.title, ", Favorite: ", this.favorite, ", Watch date: ", this.date != undefined ? this.date.format("YYYY-MM-DD") : "<not defined>", ", Score: ", this.rating, ".");
 }
 
-function FilmLibrary() {
-    this.addNewFilm = async function (film) {
+function FilmLibrary(database) {
+    this.db = database;
+    this.addNewFilm = (film) => {
         if (film.rating != undefined) {
             const sql = "INSERT INTO LIBRARY VALUES(?,?,?,?,?)";
-            db.run(sql, [film.id, film.title, film.favorite, film.date.toISOString(), film.rating]);
+            return new Promise((resolve, reject) => db.run(sql, [film.id, film.title, film.favorite, film.date.toISOString(), film.rating], (result, err) => {
+                if (err)
+                    reject(err);
+                else
+                    resolve(result);
+            }));
         } else {
             const sql = "INSERT INTO LIBRARY VALUES(?,?,?, NULL, NULL)";
-            db.run(sql, [film.id, film.title, film.favorite]);
+            return new Promise((resolve, reject) => db.run(sql, [film.id, film.title, film.favorite], (result, err) => {
+                if (err)
+                    reject(err);
+                else
+                    resolve(result);
+            }));
         }
     };
 
-    this.print = () => this.films.forEach((elem) => elem.print());
+    this.getAllFilms = () => {
+        return new Promise((resolve, reject) => {
+            let sql = "SELECT * FROM LIBRARY;";
+            this.db.all(sql, [], (err, rows) => {
+                if (err)
+                    reject(err)
+                else
+                    resolve(rows.map((elem) => new Movie(elem.id, elem.title, elem.favorite, elem.dateW, elem.rating)));
+            });
+        });
+    }
+
+    this.print = async () => (await this.getAllFilms().then()).forEach((elem) => elem.print());
     this.sortByDate = () => [...this.films].sort((a, b) => {
         if (a.date === undefined && b.date === undefined)
             return 0;
@@ -80,16 +103,16 @@ async function main() {
             }
         })); // drop table if it exists
 
-    let filmObj = new FilmLibrary();
+    let filmObj = new FilmLibrary(db);
 
-    filmObj.addNewFilm(new Movie(1, "pulp fiction", true, "2023-03-10", 5));
-    filmObj.addNewFilm(new Movie(2, "21 grams", true, "2023-03-17", 4));
-    filmObj.addNewFilm(new Movie(3, "star wars"));
-    filmObj.addNewFilm(new Movie(4, "matrix"));
-    filmObj.addNewFilm(new Movie(5, "shrek", false, "2023-03-21", 3));
-    return;
+    await filmObj.addNewFilm(new Movie(1, "pulp fiction", true, "2023-03-10", 5));
+    await filmObj.addNewFilm(new Movie(2, "21 grams", true, "2023-03-17", 4));
+    await filmObj.addNewFilm(new Movie(3, "star wars"));
+    await filmObj.addNewFilm(new Movie(4, "matrix"));
+    await filmObj.addNewFilm(new Movie(5, "shrek", false, "2023-03-21", 3));
+
     filmObj.print();
-
+    return;
     console.log("---------------------")
 
     filmObj.sortByDate().forEach((elem) => elem.print());
