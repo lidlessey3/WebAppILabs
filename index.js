@@ -1,5 +1,6 @@
 "use strict";
 
+const { Dayjs } = require("dayjs");
 const dayjs = require("dayjs");
 const sqlite = require("sqlite3");
 
@@ -99,6 +100,56 @@ function FilmLibrary(database) {
         });
     });
     this.getRated = async () => (await this.getAllFilms().then()).filter((elem) => elem.date != undefined).sort((a, b) => b.rating - a.rating);
+
+    this.getFavorites = () => new Promise((resolve, reject) => {
+        let sql = "SELECT * FROM LIBRARY WHERE favorite = TRUE;";
+        this.db.all(sql, [], (err, rows) => {
+            if (err)
+                reject(err);
+            else
+                resolve(rows.map((elem) => new Movie(elem.id, elem.title, elem.favorite, elem.dateW, elem.rating)));
+        });
+    });
+
+    this.getWatchedToday = () => new Promise((resolve, reject) => {
+        let sql = "SELECT * FROM LIBRARY WHERE dateW IS NOT NULL AND datediff(day, dateW, ?) = 0";
+        this.db.all(sql, [dayjs().toISOString()], (err, rows) => {
+            if (err)
+                reject(err);
+            else
+                resolve(rows.map((elem) => new Movie(elem.id, elem.title, elem.favorite, elem.dateW, elem.rating)));
+        });
+    });
+
+    this.getAfterDate = (date) => new Promise((resolve, reject) => {
+        let sql = "SELECT * FROM LIBRARY WHERE dateW IS NOT NULL AND dateW >= ?;";
+        this.db.all(sql, [dayjs(date).toISOString()], (err, rows) => {
+            if (err)
+                reject(err);
+            else
+                resolve(rows.map((elem) => new Movie(elem.id, elem.title, elem.favorite, elem.dateW, elem.rating)));
+        });
+    });
+
+    this.getBetterRating = (rating) => new Promise((resolve, reject) => {
+        let sql = "SELECT * FROM LIBRARY WHERE rating IS NOT NULL AND rating >= ?;";
+        this.db.all(sql, [rating], (err, rows) => {
+            if (err)
+                reject(err);
+            else
+                resolve(rows.map((elem) => new Movie(elem.id, elem.title, elem.favorite, elem.dateW, elem.rating)));
+        });
+    });
+
+    this.searchByTitle = (title) => new Promise((resolve, reject) => {
+        sql = "SELECT * FROM LIBRARY WHERE title LIKE %?%;";
+        this.db.all(sql, [title], (err, rows) => {
+            if (err)
+                reject(err);
+            else
+                resolve(rows.map((elem) => new Movie(elem.id, elem.title, elem.favorite, elem.dateW, elem.rating)));
+        });
+    });
 }
 
 async function main() {
