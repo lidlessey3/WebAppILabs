@@ -204,6 +204,41 @@ async function main() {
                 res.writeHead(200);
                 res.end(indexFile);
                 break;
+            case "/JSON/all":
+                filmObj.getAllFilms().then((ret) => {
+                    res.setHeader("Content-Type", "text/json");
+                    res.writeHead(200);
+                    res.end(JSON.stringify(ret));
+                });
+                break;
+            case "/JSON/favorites":
+                filmObj.getFavorites().then((ret) => {
+                    res.setHeader("Content-Type", "text/json");
+                    res.writeHead(200);
+                    res.end(JSON.stringify(ret));
+                });
+                break;
+            case "/JSON/bestRated":
+                filmObj.getRated().then((ret) => {
+                    res.setHeader("Content-Type", "text/json");
+                    res.writeHead(200);
+                    res.end(JSON.stringify(ret));
+                });
+                break;
+            case "/JSON/seenLastMonth":
+                filmObj.getWatchedToday().then((ret) => {
+                    res.setHeader("Content-Type", "text/json");
+                    res.writeHead(200);
+                    res.end(JSON.stringify(ret));
+                });
+                break;
+            case "/JSON/unseen":
+                filmObj.getAllFilms().then((ret) => {
+                    res.setHeader("Content-Type", "text/json");
+                    res.writeHead(200);
+                    res.end(JSON.stringify(ret.filter((elem) => elem.dateW === undefined)));
+                });
+                break;
         }
     };
 
