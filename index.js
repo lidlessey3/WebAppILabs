@@ -196,6 +196,7 @@ async function main() {
     const host = 'localhost';
     const port = 8000;
     let indexFile;
+    let cssFile;
 
     const requestListener = function (req, res) {
         switch (req.url) {
@@ -204,6 +205,10 @@ async function main() {
                 res.writeHead(200);
                 res.end(indexFile);
                 break;
+            case "/custom.css":
+                res.setHeader("Content-Type", "text/css");
+                res.writeHead(200);
+                res.end(cssFile);
             case "/JSON/all":
                 filmObj.getAllFilms().then((ret) => {
                     res.setHeader("Content-Type", "text/json");
@@ -247,9 +252,17 @@ async function main() {
     fs.readFile(__dirname + "/index.html")
         .then(contents => {
             indexFile = contents;
-            server.listen(port, host, () => {
-                console.log(`Server is running on http://${host}:${port}`);
-            });
+            fs.readFile(__dirname + "/custom.css").then((cont) => {
+                cssFile = cont;
+
+                server.listen(port, host, () => {
+                    console.log(`Server is running on http://${host}:${port}`);
+                });
+            })
+                .catch(err => {
+                    console.error(`Could not read custom.css file: ${err}`);
+                    process.exit(1);
+                });;
         })
         .catch(err => {
             console.error(`Could not read index.html file: ${err}`);
