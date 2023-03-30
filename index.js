@@ -251,6 +251,9 @@ async function main() {
                     res.end(JSON.stringify(ret.filter((elem) => elem.dateW === undefined)));
                 });
                 break;
+            default:
+                console.log(`Tried to open ${req.url}`)
+                break;
         }
     };
 
