@@ -197,6 +197,7 @@ async function main() {
     const port = 8000;
     let indexFile;
     let cssFile;
+    let jsFile;
 
     const requestListener = function (req, res) {
         switch (req.url) {
@@ -209,6 +210,12 @@ async function main() {
                 res.setHeader("Content-Type", "text/css");
                 res.writeHead(200);
                 res.end(cssFile);
+                break;
+            case "/logic.js":
+                res.setHeader("Content-Type", "text/java-script");
+                res.writeHead(200);
+                res.end(jsFile);
+                break;
             case "/JSON/all":
                 filmObj.getAllFilms().then((ret) => {
                     res.setHeader("Content-Type", "text/json");
@@ -254,15 +261,22 @@ async function main() {
             indexFile = contents;
             fs.readFile(__dirname + "/custom.css").then((cont) => {
                 cssFile = cont;
+                fs.readFile(__dirname + "/logic.js").then((jsData) => {
+                    jsFile = jsData;
 
-                server.listen(port, host, () => {
-                    console.log(`Server is running on http://${host}:${port}`);
-                });
+                    server.listen(port, host, () => {
+                        console.log(`Server is running on http://${host}:${port}`);
+                    });
+                })
+                    .catch(err => {
+                        console.error(`Could not read logic.js file: ${err}`);
+                        process.exit(1);
+                    });
             })
                 .catch(err => {
                     console.error(`Could not read custom.css file: ${err}`);
                     process.exit(1);
-                });;
+                });
         })
         .catch(err => {
             console.error(`Could not read index.html file: ${err}`);
