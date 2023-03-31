@@ -5,11 +5,11 @@ function Movie(id, title, favorite = false, date = undefined, rating = undefined
     this.title = title;
     this.favorite = favorite;
     if (date != undefined)
-        this.date = date;
+        this.date = dayjs(date);
     if (rating != undefined)
         this.rating = rating < 1 ? 1 : rating > 5 ? 5 : rating;
     this.watch = (date, rating) => {
-        this.date = date;
+        this.date = dayjs(date);
         this.rating = rating < 1 ? 1 : rating > 5 ? 5 : rating;
     };
     this.reset = () => {
@@ -29,8 +29,10 @@ function filterAll() {
 
             setFilms(films);
         });
-    
+
     document.getElementById("filter-title").textContent = "All";
+    document.getElementsByClassName("active")[0].className = document.getElementsByClassName("active")[0].className.replace(" active", "");
+    document.getElementById("filter-all").className += " active";
 }
 
 function filterFavorites() {
@@ -42,8 +44,10 @@ function filterFavorites() {
 
             setFilms(films);
         });
-    
+
     document.getElementById("filter-title").textContent = "Favorites";
+    document.getElementsByClassName("active")[0].className = document.getElementsByClassName("active")[0].className.replace(" active", "");
+    document.getElementById("filter-favorites").className += " active";
 }
 
 function filterRated() {
@@ -55,8 +59,10 @@ function filterRated() {
 
             setFilms(films);
         });
-    
+
     document.getElementById("filter-title").textContent = "Best Rated";
+    document.getElementsByClassName("active")[0].className = document.getElementsByClassName("active")[0].className.replace(" active", "");
+    document.getElementById("filter-best").className += " active";
 }
 
 function filterSeenThisMonth() {
@@ -68,8 +74,10 @@ function filterSeenThisMonth() {
 
             setFilms(films);
         });
-    
+
     document.getElementById("filter-title").textContent = "Seen Last Month";
+    document.getElementsByClassName("active")[0].className = document.getElementsByClassName("active")[0].className.replace(" active", "");
+    document.getElementById("filter-seen-last-month").className += " active";
 }
 
 function filterUnseen() {
@@ -81,8 +89,10 @@ function filterUnseen() {
 
             setFilms(films);
         });
-    
+
     document.getElementById("filter-title").textContent = "Unseen";
+    document.getElementsByClassName("active")[0].className = document.getElementsByClassName("active")[0].className.replace(" active", "");
+    document.getElementById("filter-unseen").className += " active";
 }
 
 function setFilms(films) {
@@ -95,7 +105,9 @@ function setFilms(films) {
         divElem.className = "d-flex w-100 justify-content-between";
 
         let pElem = document.createElement("p");
-        pElem.className = "favorite text-start col-md-4 col-3";
+        pElem.className = "text-start col-md-4 col-3";
+        if (film.favorite)
+            pElem.className += " favorite"
         pElem.textContent = film.title;
 
         let favoriteSpan = document.createElement("span");
@@ -117,7 +129,8 @@ function setFilms(films) {
 
         let smallDate = document.createElement("small");
         smallDate.className = "watch-date col-md-3 col-3";
-        smallDate.textContent = film.date;
+        if (film.date !== undefined)
+            smallDate.textContent = film.date.format("DD/MM/YYYY");
 
 
         let ratingSpan = document.createElement("span");
@@ -167,3 +180,9 @@ function setFilms(films) {
         return listElem;
     }));
 }
+
+document.getElementById("filter-all").addEventListener("click", filterAll);
+document.getElementById("filter-favorites").addEventListener("click", filterFavorites);
+document.getElementById("filter-best").addEventListener("click", filterRated);
+document.getElementById("filter-seen-last-month").addEventListener("click", filterSeenThisMonth);
+document.getElementById("filter-unseen").addEventListener("click", filterUnseen);

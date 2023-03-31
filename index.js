@@ -113,7 +113,7 @@ function FilmLibrary(database) {
     });
 
     this.getWatchedToday = () => new Promise((resolve, reject) => {
-        let sql = "SELECT * FROM LIBRARY WHERE dateW IS NOT NULL AND datediff(day, dateW, ?) = 0";
+        let sql = "SELECT * FROM LIBRARY WHERE dateW IS NOT NULL AND JULIANDAY(dateW) - JULIANDAY(?) = 0";
         this.db.all(sql, [dayjs().toISOString()], (err, rows) => {
             if (err)
                 reject(err);
@@ -177,22 +177,6 @@ async function main() {
 
     filmObj.print();
 
-    console.log("---------------------");
-
-    (await filmObj.sortByDate()).forEach((elem) => elem.print());
-
-    console.log("---------------------");
-    (await filmObj.getRated()).forEach((elem) => elem.print());
-
-    console.log("---------------------");
-    await filmObj.resetWatchedFilms();
-    filmObj.print();
-
-    console.log("---------------------");
-    await filmObj.deleteFilm(5);
-    await filmObj.deleteFilm(2);
-    filmObj.print();
-
     const host = 'localhost';
     const port = 8000;
     let indexFile;
@@ -238,17 +222,21 @@ async function main() {
                 });
                 break;
             case "/JSON/seenLastMonth":
-                filmObj.getWatchedToday().then((ret) => {
+                filmObj.getAllFilms().then((ret) => {
                     res.setHeader("Content-Type", "text/json");
                     res.writeHead(200);
-                    res.end(JSON.stringify(ret));
+                    res.end(JSON.stringify(ret.filter((elem) => {
+                        if (elem.date === undefined)
+                            return false;
+                        return elem.date.diff(dayjs(), 'month') === 0
+                    })));
                 });
                 break;
             case "/JSON/unseen":
                 filmObj.getAllFilms().then((ret) => {
                     res.setHeader("Content-Type", "text/json");
                     res.writeHead(200);
-                    res.end(JSON.stringify(ret.filter((elem) => elem.dateW === undefined)));
+                    res.end(JSON.stringify(ret.filter((elem) => elem.date === undefined)));
                 });
                 break;
             default:
