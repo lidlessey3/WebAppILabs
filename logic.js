@@ -27,7 +27,7 @@ function filterAll() {
             films = json.map((elem) => new Movie(elem['id'], elem['title'], elem['favorite'], elem['date'], elem['rating']));
             console.log(films);
 
-
+            setFilms(films);
         });
 }
 
