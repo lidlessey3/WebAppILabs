@@ -139,36 +139,11 @@ function setFilms(films) {
             film.rating = 0;
 
         for (let i = 0; i < film.rating; i++) {
-            let fullStar = document.createElement("svg");
-            fullStar.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-            fullStar.setAttribute("width", "16");
-            fullStar.setAttribute("height", "16");
-            fullStar.setAttribute("fill", "currentColor");
-            fullStar.className = "bi bi-star-fill";
-            fullStar.setAttribute("viewBox", "0 0 16 16");
-
-            let fullPath = document.createElement("path");
-            fullPath.setAttribute("d", "M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z")
-
-
-            fullStar.appendChild(fullPath);
-            ratingSpan.appendChild(fullStar);
+            ratingSpan.appendChild(getSVGStar(true));
         }
 
         for (let i = 0; i < (5 - film.rating); i++) {
-            let fullStar = document.createElement("svg");
-            fullStar.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-            fullStar.setAttribute("width", "16");
-            fullStar.setAttribute("height", "16");
-            fullStar.setAttribute("fill", "currentColor");
-            fullStar.setAttribute("viewBox", "0 0 16 16");
-            fullStar.className = "empty-star bi bi-star";
-
-            let fullPath = document.createElement("path");
-            fullPath.setAttribute("d", "M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z");
-
-            fullStar.appendChild(fullPath);
-            ratingSpan.appendChild(fullStar);
+            ratingSpan.appendChild(getSVGStar(false));
         }
 
         divElem.appendChild(pElem);
@@ -186,3 +161,21 @@ document.getElementById("filter-favorites").addEventListener("click", filterFavo
 document.getElementById("filter-best").addEventListener("click", filterRated);
 document.getElementById("filter-seen-last-month").addEventListener("click", filterSeenThisMonth);
 document.getElementById("filter-unseen").addEventListener("click", filterUnseen);
+
+function getSVGStar(fill){
+    const sgv = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    sgv.setAttribute("width", 16);
+    sgv.setAttribute("height", 16);
+    sgv.setAttribute("fill", "currentColor");
+    sgv.setAttribute("viewBox", "0 0 16 16");
+
+    if (fill) {
+        sgv.setAttribute("class", "bi bi-star-fill");
+        sgv.innerHTML = '<path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>';
+    }else{
+        sgv.setAttribute("class", "empty-star bi bi-star");
+        sgv.innerHTML = '<path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>';
+    }
+
+    return sgv;
+}
