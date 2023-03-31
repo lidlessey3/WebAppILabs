@@ -29,6 +29,8 @@ function filterAll() {
 
             setFilms(films);
         });
+    
+    document.getElementById("filter-title").textContent = "All";
 }
 
 function filterFavorites() {
@@ -40,6 +42,8 @@ function filterFavorites() {
 
             setFilms(films);
         });
+    
+    document.getElementById("filter-title").textContent = "Favorites";
 }
 
 function filterRated() {
@@ -51,6 +55,8 @@ function filterRated() {
 
             setFilms(films);
         });
+    
+    document.getElementById("filter-title").textContent = "Best Rated";
 }
 
 function filterSeenThisMonth() {
@@ -62,6 +68,8 @@ function filterSeenThisMonth() {
 
             setFilms(films);
         });
+    
+    document.getElementById("filter-title").textContent = "Seen Last Month";
 }
 
 function filterUnseen() {
@@ -73,6 +81,8 @@ function filterUnseen() {
 
             setFilms(films);
         });
+    
+    document.getElementById("filter-title").textContent = "Unseen";
 }
 
 function setFilms(films) {
