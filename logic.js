@@ -31,6 +31,50 @@ function filterAll() {
         });
 }
 
+function filterFavorites() {
+    fetch('/JSON/favorites')
+        .then((response) => response.json())
+        .then((json) => {
+            films = json.map((elem) => new Movie(elem['id'], elem['title'], elem['favorite'], elem['date'], elem['rating']));
+            console.log(films);
+
+            setFilms(films);
+        });
+}
+
+function filterRated() {
+    fetch('/JSON/bestRated')
+        .then((response) => response.json())
+        .then((json) => {
+            films = json.map((elem) => new Movie(elem['id'], elem['title'], elem['favorite'], elem['date'], elem['rating']));
+            console.log(films);
+
+            setFilms(films);
+        });
+}
+
+function filterSeenThisMonth() {
+    fetch('/JSON/seenLastMonth')
+        .then((response) => response.json())
+        .then((json) => {
+            films = json.map((elem) => new Movie(elem['id'], elem['title'], elem['favorite'], elem['date'], elem['rating']));
+            console.log(films);
+
+            setFilms(films);
+        });
+}
+
+function filterUnseen() {
+    fetch('/JSON/unseen')
+        .then((response) => response.json())
+        .then((json) => {
+            films = json.map((elem) => new Movie(elem['id'], elem['title'], elem['favorite'], elem['date'], elem['rating']));
+            console.log(films);
+
+            setFilms(films);
+        });
+}
+
 function setFilms(films) {
     document.getElementById("list-films").replaceChildren(...films.map((film) => {
         let listElem = document.createElement("li");
