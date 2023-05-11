@@ -5,7 +5,6 @@ import { Navbar, Nav, Form } from 'react-bootstrap';
 
 const TopBar = (props) => {
     return (
-        <div>
             <Navbar bg="primary" expand="sm" variant="dark" fixed="top" className="navbar-padding">
                 <Navbar.Brand href="index.html">
                     <i className="bi bi-collection-play icon-size" /> Film Library
@@ -21,7 +20,6 @@ const TopBar = (props) => {
                     </Nav.Item>
                 </Nav>
             </Navbar>
-        </div>
     );
 }
 

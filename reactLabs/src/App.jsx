@@ -32,23 +32,36 @@ new Movie(1, "21 grams", true, "17/03/2023", 4),
 new Movie(2, "star wars"), new Movie(3, "matrix"),
 new Movie(4, "shrek", false, "21/03/2023", 3)];
 
+
+const filters = {
+  'filter-all': { label: 'All', id: 'filter-all', filterFunction: () => true },
+  'filter-favorite': { label: 'Favorites', id: 'filter-favorite', filterFunction: film => film.favorite },
+  'filter-best': { label: 'Best Rated', id: 'filter-best', filterFunction: film => film.rating >= 5 },
+  'filter-lastmonth': { label: 'Seen Last Month', id: 'filter-lastmonth', filterFunction: film => isSeenLastMonth(film) },
+  'filter-unseen': { label: 'Unseen', id: 'filter-unseen', filterFunction: film => film.watchDate ? false : true }
+};
+
+const isSeenLastMonth = (film) => {
+  if ('watchDate' in film) {  // Accessing watchDate only if defined
+    const diff = film.watchDate.diff(dayjs(), 'month')
+    const isLastMonth = diff <= 0 && diff > -1;      // last month
+    return isLastMonth;
+  }
+}
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [activeFilter, setActiveFilter] = useState('filter-all');
 
   return (
     <>
-      <Container>
-        <Row>
-          <Col>
-            <TopBar></TopBar>
+      <Container fluid>
+        <Row><Col><TopBar></TopBar></Col></Row>
+        <Row className='vh-100' id="MainPage">
+          <Col md={4} xl={3} bg="light" id="left-sidebar">
+            <LateralBar filters={filters} selected={activeFilter} updateFunc={setActiveFilter}></LateralBar>
           </Col>
-        </Row>
-        <Row>
-          <Col>
-            <LateralBar></LateralBar>
-          </Col>
-          <Col>
-            <FilmList films={Films}></FilmList>
+          <Col md={8} xl={9} >
+            <FilmList films={Films} filter={filters[activeFilter]}></FilmList>
           </Col>
         </Row>
       </Container>
