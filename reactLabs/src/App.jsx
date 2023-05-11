@@ -1,9 +1,12 @@
-import { useState } from 'react'
-import { Container, Row, Col } from 'react-bootstrap'
-import TopBar from 'components/topBar.jsx'
-import FilmList from './components/filmList'
-import LateralBar from './components/lateralBar'
-import './App.css'
+import { useState } from 'react';
+import { Container, Row, Col, Button } from 'react-bootstrap';
+import TopBar from 'components/topBar.jsx';
+import FilmList from './components/filmList';
+import LateralBar from './components/lateralBar';
+import dayjs from 'dayjs';
+import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 function Movie(id, title, favorite = false, date = undefined, rating = undefined) {
   this.id = id;
