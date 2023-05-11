@@ -1,33 +1,54 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { Container, Row, Col } from 'react-bootstrap'
+import TopBar from 'components/topBar.jsx'
+import FilmList from './components/filmList'
+import LateralBar from './components/lateralBar'
 import './App.css'
+
+function Movie(id, title, favorite = false, date = undefined, rating = undefined) {
+  this.id = id;
+  this.title = title;
+  this.favorite = favorite;
+  if (date != undefined)
+    this.date = dayjs(date);
+  if (rating != undefined)
+    this.rating = rating < 1 ? 1 : rating > 5 ? 5 : rating;
+  this.watch = (date, rating) => {
+    this.date = dayjs(date);
+    this.rating = rating < 1 ? 1 : rating > 5 ? 5 : rating;
+  };
+  this.reset = () => {
+    this.date = undefined;
+    this.rating = undefined;
+  }
+  this.print = () => console.log("Id: ", this.id, ", Title: ", this.title, ", Favorite: ", this.favorite, ", Watch date: ", this.date != undefined ? this.date.format("YYYY-MM-DD") : "<not defined>", ", Score: ", this.rating, ".");
+}
+
+let Films = [new Movie(0, "pulp fiction", true, "10/03/2023", 5),
+new Movie(1, "21 grams", true, "17/03/2023", 4),
+new Movie(2, "star wars"), new Movie(3, "matrix"),
+new Movie(4, "shrek", false, "21/03/2023", 3)];
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Container>
+        <Row>
+          <Col>
+            <TopBar></TopBar>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <LateralBar></LateralBar>
+          </Col>
+          <Col>
+            <FilmList films={Films}></FilmList>
+          </Col>
+        </Row>
+      </Container>
     </>
   )
 }
