@@ -1,2 +1,2 @@
-node_modules/*
-films.sqlite
+/FirstLabs/node_modules/
+/FirstLabs/films.sqlite
