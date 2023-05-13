@@ -1,7 +1,8 @@
 import 'dayjs';
-import { Table, Form } from 'react-bootstrap/'
+import { Table, Form, Button } from 'react-bootstrap/'
 
 let FilmList = (props) => {
+  
     return (
       <>
         <h1>{props.filter.label}</h1>
@@ -10,6 +11,11 @@ let FilmList = (props) => {
             {props.films.filter(props.filter.filterFunction).map((film) => <FilmRow filmData={film} key={film.id} />)}
           </tbody>
         </Table>
+        <div className='d-grid gap-2'>
+          <Button variant='outline-primary' size="lg"> 
+            <i key="plusButton" className='bi bi-plus' />
+          </Button>
+        </div>
       </>
     );
 }
@@ -31,7 +37,7 @@ function FilmRow(props) {
         <Form.Check type="checkbox" label="Favorite" defaultChecked={props.filmData.favorite ? true : false}/>
       </td>
       <td>
-        <small>{formatWatchDate(props.filmData.watchDate, 'MMMM D, YYYY')}</small>
+        <small>{formatWatchDate(props.filmData.date, 'YYYY/MM/DD')}</small>
       </td>
       <td>
         <Rating rating={props.filmData.rating} maxStars={5}/>

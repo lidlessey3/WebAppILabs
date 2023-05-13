@@ -27,10 +27,10 @@ function Movie(id, title, favorite = false, date = undefined, rating = undefined
   this.print = () => console.log("Id: ", this.id, ", Title: ", this.title, ", Favorite: ", this.favorite, ", Watch date: ", this.date != undefined ? this.date.format("YYYY-MM-DD") : "<not defined>", ", Score: ", this.rating, ".");
 }
 
-let Films = [new Movie(0, "pulp fiction", true, "10/03/2023", 5),
-new Movie(1, "21 grams", true, "17/03/2023", 4),
+const Films = [new Movie(0, "pulp fiction", true, "03/10/2023", 5),
+new Movie(1, "21 grams", true, "03/17/2023", 4),
 new Movie(2, "star wars"), new Movie(3, "matrix"),
-new Movie(4, "shrek", false, "21/03/2023", 3)];
+new Movie(4, "shrek", false, "03/21/2023", 3)];
 
 
 const filters = {
@@ -38,7 +38,7 @@ const filters = {
   'filter-favorite': { label: 'Favorites', id: 'filter-favorite', filterFunction: film => film.favorite },
   'filter-best': { label: 'Best Rated', id: 'filter-best', filterFunction: film => film.rating >= 5 },
   'filter-lastmonth': { label: 'Seen Last Month', id: 'filter-lastmonth', filterFunction: film => isSeenLastMonth(film) },
-  'filter-unseen': { label: 'Unseen', id: 'filter-unseen', filterFunction: film => film.watchDate ? false : true }
+  'filter-unseen': { label: 'Unseen', id: 'filter-unseen', filterFunction: film => film.date ? false : true }
 };
 
 const isSeenLastMonth = (film) => {
