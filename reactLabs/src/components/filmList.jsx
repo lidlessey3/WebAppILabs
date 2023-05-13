@@ -1,23 +1,27 @@
 import 'dayjs';
+import { useState } from 'react';
 import { Table, Form, Button } from 'react-bootstrap/'
+import NewFilmForm from './newFilmForm';
 
 let FilmList = (props) => {
-  
-    return (
+  const [addFormVisible, setAddFormVisible] = useState(false);
+   
+  return (
       <>
         <h1>{props.filter.label}</h1>
         <Table striped>
           <tbody>
             {props.films.filter(props.filter.filterFunction).map((film) => <FilmRow filmData={film} key={film.id} />)}
           </tbody>
-        </Table>
+      </Table>
+      
         <div className='d-grid gap-2'>
-          <Button variant='outline-primary' size="lg"> 
-            <i key="plusButton" className='bi bi-plus' />
+          <Button variant={addFormVisible? 'outline-danger' : 'outline-primary'} size="lg" onClick={() => setAddFormVisible(!addFormVisible)}> 
+            { addFormVisible? <i key="minusButton" className='bi bi-x-circle' /> : <i key="plusButton" className='bi bi-plus' />}
           </Button>
         </div>
       </>
-    );
+  );
 }
 
 function FilmRow(props) {
