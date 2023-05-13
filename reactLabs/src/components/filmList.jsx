@@ -1,10 +1,14 @@
 import 'dayjs';
 import { useState } from 'react';
-import { Table, Form, Button } from 'react-bootstrap/'
+import { Table, Button, Collapse } from 'react-bootstrap/'
 import NewFilmForm from './newFilmForm';
 
 let FilmList = (props) => {
   const [addFormVisible, setAddFormVisible] = useState(false);
+  const [FormTitle, setFormTitle] = useState('');
+  const [FormFavorite, setFormFavorite] = useState(false);
+  const [FormDate, setFormDate] = useState(undefined);
+  const [FormRating, setFormRating] = useState(undefined);
 
   return (
     <>
@@ -14,9 +18,22 @@ let FilmList = (props) => {
           {props.films.filter(props.filter.filterFunction).map((film) => <FilmRow filmData={film} key={film.id} />)}
         </tbody>
       </Table>
-
+      <Collapse in={addFormVisible}>
+        <div>
+          <NewFilmForm title={FormTitle} favorite={FormFavorite} date={FormDate} rating={FormRating}
+            setTitle={setFormTitle} setFavorite={setFormFavorite} setDate={setFormDate} setRating={setFormRating}></NewFilmForm>
+        </div>
+      </Collapse>
       <div className='d-grid gap-2'>
-        <Button variant={addFormVisible ? 'outline-danger' : 'outline-primary'} size="lg" onClick={() => setAddFormVisible(!addFormVisible)}>
+        <Button variant={addFormVisible ? 'outline-danger' : 'outline-primary'} size="lg" onClick={() => {
+          if (addFormVisible) {
+            setFormTitle('');
+            setFormFavorite(false);
+            setFormDate(undefined);
+            setFormRating(undefined);
+          }
+          setAddFormVisible(!addFormVisible);
+        }}>
           {addFormVisible ? <i key="minusButton" className='bi bi-x-circle' /> : <i key="plusButton" className='bi bi-plus' />}
         </Button>
       </div>
@@ -38,7 +55,7 @@ function FilmRow(props) {
         </p>
       </td>
       <td>
-        <Form.Check type="checkbox" label="Favorite" defaultChecked={props.filmData.favorite ? true : false} />
+        <i className={props.filmData.favorite ? 'bi bi-check-circle' : 'hidden'} style={{ color: 'green' }} />
       </td>
       <td>
         <small>{formatWatchDate(props.filmData.date, 'YYYY/MM/DD')}</small>
