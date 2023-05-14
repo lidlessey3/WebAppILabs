@@ -5,7 +5,7 @@ import 'dayjs';
 function NewFilmForm(props) {
     return (
         <>
-            <Form id="FilmForm">
+            <Form id="FilmForm" onSubmit={props.success}>
                 <Form.Control className='FilmFormElem' id="FormTitle" type='text' placeholder='Title...'
                     value={props.title} onChange={(x) => props.setTitle(x.target.value)}></Form.Control>
                 <Form.Check className='FilmFormElem' id="FormFavourite" type='checkbox' label='Favorite'

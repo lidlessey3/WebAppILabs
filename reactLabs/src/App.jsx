@@ -27,7 +27,7 @@ function Movie(id, title, favorite = false, date = undefined, rating = undefined
   this.print = () => console.log("Id: ", this.id, ", Title: ", this.title, ", Favorite: ", this.favorite, ", Watch date: ", this.date != undefined ? this.date.format("YYYY-MM-DD") : "<not defined>", ", Score: ", this.rating, ".");
 }
 
-const Films = [new Movie(0, "pulp fiction", true, "03/10/2023", 5),
+const FILMS = [new Movie(0, "pulp fiction", true, "03/10/2023", 5),
 new Movie(1, "21 grams", true, "03/17/2023", 4),
 new Movie(2, "star wars"), new Movie(3, "matrix"),
 new Movie(4, "shrek", false, "03/21/2023", 3)];
@@ -51,6 +51,8 @@ const isSeenLastMonth = (film) => {
 
 function App() {
   const [activeFilter, setActiveFilter] = useState('filter-all');
+  const [films, setFilms] = useState(FILMS);
+  const [nextID, setNextID] = useState(5);
 
   return (
     <>
@@ -61,7 +63,7 @@ function App() {
             <LateralBar filters={filters} selected={activeFilter} updateFunc={setActiveFilter}></LateralBar>
           </Col>
           <Col md={8} xl={9} >
-            <FilmList films={Films} filter={filters[activeFilter]}></FilmList>
+            <FilmList films={films} filter={filters[activeFilter]} setFilms={setFilms} nextID={nextID} advanceID={() => setNextID(nextID + 1)}></FilmList>
           </Col>
         </Row>
       </Container>
