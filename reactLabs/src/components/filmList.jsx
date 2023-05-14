@@ -8,10 +8,10 @@ function Movie(id, title, favorite = false, date = undefined, rating = undefined
   this.id = id;
   this.title = title;
   this.favorite = favorite;
-  if (date != undefined)
+  if (date != undefined) {
     this.date = dayjs(date);
-  if (rating != undefined)
     this.rating = rating < 1 ? 1 : rating > 5 ? 5 : rating;
+  }
   this.watch = (date, rating) => {
     this.date = dayjs(date);
     this.rating = rating < 1 ? 1 : rating > 5 ? 5 : rating;
@@ -71,7 +71,10 @@ let FilmList = (props) => {
                     newFilms[i].title = FormTitle;
                     newFilms[i].favorite = FormFavorite;
                     newFilms[i].date = FormDate;
-                    newFilms[i].rating = FormRating;
+                    if (newFilms[i].date === undefined)
+                      newFilms[i].rating = undefined;
+                    else
+                      newFilms[i].rating = FormRating;
                   }
                 }
               }
@@ -119,7 +122,7 @@ function FilmRow(props) {
       </td>
       <td>
         <Button variant='outline-secondary' onClick={props.editForm}>
-          <i class="bi bi-pencil-fill"></i>
+          <i className="bi bi-pencil-fill"></i>
         </Button>
       </td>
     </tr>

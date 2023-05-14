@@ -5,10 +5,15 @@ import 'dayjs';
 function NewFilmForm(props) {
     return (
         <>
-            <Form id="FilmForm" onSubmit={props.success}>
+            <Form id="FilmForm" onSubmit={() => { 
+                // begin validation
+                if (props.rating === '' || props.date === undefined)
+                    props.setRating(undefined);
+                props.success();
+             }}>
                 <Form.Control className='FilmFormElem' id="FormTitle" type='text' placeholder='Title...'
-                    value={props.title} onChange={(x) => props.setTitle(x.target.value)}></Form.Control>
-                <Form.Check className='FilmFormElem' id="FormFavourite" type='checkbox' label='Favorite'
+                    value={props.title} onChange={(x) => props.setTitle(x.target.value)} required></Form.Control>
+                <Form.Check className='FilmFormElem' id="FormFavorite" type='checkbox' label='Favorite'
                     checked={props.favorite} onChange={(x) => props.setFavorite(x.target.checked)}></Form.Check>
                 <Form.Control className='FilmFormElem' id="FormDate" type='date' value={props.date !== undefined ? props.date.format('YYYY-MM-DD') : ''} onChange={(x) => {
                     if (x.target.value === '')
@@ -17,8 +22,8 @@ function NewFilmForm(props) {
                         props.setDate(dayjs(x.target.value, "YYYY-MM-DD"));
                 }}></Form.Control>
                 <Form.Select className='FilmFormElem' id="FormRating" value={props.rating === undefined ? 0 : props.rating}
-                    disabled={props.date === undefined} onChange={(x) => props.setRating(x.target.value)}>
-                    <option value={0}>Rate</option>
+                    disabled={props.date === undefined} required={props.date !== undefined} onChange={(x) => props.setRating(x.target.value)}>
+                    <option value={''}>Rate</option>
                     <option value={1}>1</option>
                     <option value={2}>2</option>
                     <option value={3}>3</option>
