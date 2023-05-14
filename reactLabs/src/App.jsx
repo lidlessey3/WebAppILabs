@@ -42,8 +42,8 @@ const filters = {
 };
 
 const isSeenLastMonth = (film) => {
-  if ('watchDate' in film) {  // Accessing watchDate only if defined
-    const diff = film.watchDate.diff(dayjs(), 'month')
+  if ('date' in film) {  // Accessing watchDate only if defined
+    const diff = film.date.diff(dayjs(), 'month')
     const isLastMonth = diff <= 0 && diff > -1;      // last month
     return isLastMonth;
   }
