@@ -5,8 +5,8 @@ import 'dayjs';
 function NewFilmForm(props) {
     return (
         <>
-            <Form id="FilmForm" onSubmit={() => { 
-                // begin validation
+            <Form id="FilmForm" onSubmit={(event) => {
+                event.preventDefault();
                 if (props.rating === '' || props.date === undefined)
                     props.setRating(undefined);
                 props.success();

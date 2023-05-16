@@ -1,6 +1,7 @@
 import 'dayjs';
 import { useState } from 'react';
 import { Table, Button, Collapse } from 'react-bootstrap/'
+import { useParams } from 'react-router-dom';
 import NewFilmForm from './newFilmForm';
 import dayjs from 'dayjs'
 
@@ -24,6 +25,8 @@ function Movie(id, title, favorite = false, date = undefined, rating = undefined
 }
 
 let FilmList = (props) => {
+  let { filter } = useParams();
+
   const [addFormVisible, setAddFormVisible] = useState(false);
   const [FormTitle, setFormTitle] = useState('');
   const [FormFavorite, setFormFavorite] = useState(false);
@@ -41,10 +44,10 @@ let FilmList = (props) => {
 
   return (
     <>
-      <h1>{props.filter.label}</h1>
+      <h1>{props.filters[filter].label}</h1>
       <Table striped>
         <tbody>
-          {props.films.filter(props.filter.filterFunction).map((film) => <FilmRow filmData={film} key={film.id} editForm={() => {
+          {props.films.filter(props.filters[filter].filterFunction).map((film) => <FilmRow filmData={film} key={film.id} editForm={() => {
             setAddFormVisible(true);
             setFormID(film.id);
             setFormTitle(film.title);

@@ -3,10 +3,12 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 import TopBar from './components/topBar.jsx';
 import FilmList from './components/filmList';
 import LateralBar from './components/lateralBar';
+import { Routes, Route, BrowserRouter, Outlet, useParams } from 'react-router-dom'
 import dayjs from 'dayjs';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import NewFilmForm from './components/newFilmForm.jsx';
 
 function Movie(id, title, favorite = false, date = undefined, rating = undefined) {
   this.id = id;
@@ -50,23 +52,40 @@ const isSeenLastMonth = (film) => {
 }
 
 function App() {
-  const [activeFilter, setActiveFilter] = useState('filter-all');
   const [films, setFilms] = useState(FILMS);
   const [nextID, setNextID] = useState(5);
 
   return (
     <>
-      <Container fluid>
-        <Row><Col><TopBar></TopBar></Col></Row>
-        <Row className='vh-100' id="MainPage">
-          <Col md={4} xl={3} bg="light" id="left-sidebar">
-            <LateralBar filters={filters} selected={activeFilter} updateFunc={setActiveFilter}></LateralBar>
-          </Col>
-          <Col md={8} xl={9} >
-            <FilmList films={films} filter={filters[activeFilter]} setFilms={setFilms} nextID={nextID} advanceID={() => setNextID(nextID + 1)}></FilmList>
-          </Col>
-        </Row>
-      </Container>
+      <BrowserRouter>
+        <Routes>
+          <Route element={<>
+            <TopBar></TopBar>
+            <Container fluid>
+              <Outlet></Outlet>
+            </Container>
+          </>}>
+            <Route path="/filter/:filter" element={
+              <>
+                <Row className='vh-100' id="MainPage">
+                  <Col md={4} xl={3} bg="light" id="left-sidebar">
+                    <LateralBar filters={filters}></LateralBar>
+                  </Col>
+                  <Col md={8} xl={9} >
+                    <FilmList films={films} filters={filters} setFilms={setFilms} nextID={nextID} advanceID={() => setNextID(nextID + 1)}></FilmList>
+                  </Col>
+                </Row>
+              </>
+            }></Route>
+            <Route path="/newFilm" element={<>
+              <NewFilmForm></NewFilmForm>
+            </>}></Route>
+            <Route path="/editFilm/:id" element={<>
+              <NewFilmForm></NewFilmForm>
+            </>}></Route>
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </>
   )
 }
