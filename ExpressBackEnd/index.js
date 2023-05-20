@@ -29,9 +29,22 @@ function Movie(id, title, favorite = false, date = undefined, rating = undefined
 function FilmLibrary(database) {
     this.db = database;
     this.addNewFilm = (film, user) => {
+        let id = {then: () => film.id};
+        if (film.id === -1) {
+            const sql = "SELECT MAX(id) AS maxID FROM films;"
+            id = new Promise((resolve, reject) => {
+                this.db.run(sql, [], (result, err) => {
+                    if (err)
+                        reject(err);
+                    else
+                        resolve(result.maxID + 1);
+                })
+            })
+        }
+        
         if (film.rating != undefined) {
             const sql = "INSERT INTO films VALUES(?, ?, ?, ?, ?, ?)";
-            return new Promise((resolve, reject) => db.run(sql, [film.id, film.title, film.favorite, film.date.toISOString(), film.rating, user], (result, err) => {
+            return new Promise((resolve, reject) => db.run(sql, [id.then(), film.title, film.favorite, film.date.toISOString(), film.rating, user], (result, err) => {
                 if (err)
                     reject(err);
                 else
@@ -92,9 +105,9 @@ function FilmLibrary(database) {
         });
     });
 
-    this.getAfterDate = (date, user) => new Promise((resolve, reject) => {
-        let sql = "SELECT * FROM films WHERE watchdate IS NOT NULL AND watchdate >= ? AND user = ?;";
-        this.db.all(sql, [dayjs(date).toISOString(), user], (err, rows) => {
+    this.getUnseen = (user) => new Promise((resolve, reject) => {
+        let sql = "SELECT * FROM films WHERE watchdate IS NULL AND user = ?;";
+        this.db.all(sql, [user], (err, rows) => {
             if (err)
                 reject(err);
             else
@@ -154,4 +167,17 @@ app.get('/:user/films/search', (req, res) => {
         res.status(200).json(data);
         res.end();
     })
+});
+
+app.get('/:user/films/unseen', (req, res) => {
+    films.getUnseen(req.params.user).then((data) => {
+        res.status(200).json(data);
+        res.end();
+    })
+});
+
+app.post('/:user/films/new', express.json, (req, res) => {
+    let newFilm = new Movie(-1, req.body.title, req.body.favorite, req.body.date, req.body.rating);
+    films.addNewFilm(newFilm, req.params.user);
+    res.status(200).end();
 });
