@@ -113,8 +113,8 @@ function FilmLibrary(database) {
     });
 
     this.searchByTitle = (title, user) => new Promise((resolve, reject) => {
-        sql = "SELECT * FROM films WHERE title LIKE %?% AND user = 1;";
-        this.db.all(sql, [title, user], (err, rows) => {
+        let sql = "SELECT * FROM films WHERE title LIKE ? AND user = ?;";
+        this.db.all(sql, ['%' + title + '%', user], (err, rows) => {
             if (err)
                 reject(err);
             else
@@ -143,7 +143,7 @@ app.get('/:user/films/favorites', (req, res) => {
 });
 
 app.get('/:user/films/best', (req, res) => {
-    films.getBetterRating(req.params.user).then((data) => {
+    films.getBetterRating(5, req.params.user).then((data) => {
         res.status(200).json(data);
         res.end();
     })
