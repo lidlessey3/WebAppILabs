@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
 import TopBar from './components/topBar.jsx';
 import FilmList from './components/filmList';
@@ -52,8 +52,10 @@ const isSeenLastMonth = (film) => {
 }
 
 function App() {
-  const [films, setFilms] = useState(FILMS);
+  const [films, setFilms] = useState([]);
   const [nextID, setNextID] = useState(5);
+
+  useEffect(() => fetch("localhost:3178/1/films").then((result) => result.json()).then((films) => setFilms(films)), []);
 
   return (
     <>
